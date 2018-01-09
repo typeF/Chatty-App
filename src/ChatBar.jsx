@@ -7,7 +7,7 @@ class ChatBar extends React.Component {
     return (
       <footer className="chatbar">
         <input className="chatbar-username" placeholder={username} />
-        <input className="chatbar-message" placeholder="Type a message and hit ENTER" />
+        <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress={(event => {if (event.key === 'Enter') {this.props.newMessage(event.target.value); event.target.value = ''; }} )}/>
       </footer>
     )
   }
