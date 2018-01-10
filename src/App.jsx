@@ -8,28 +8,62 @@ class App extends Component {
     super(props);
     this.state = {
       currentUser: { name: 'Bobby' },
-      messages: [
-        {
-          username: 'Bob',
-          content: 'Has anyone seen my marbles',
-        },
-        {
-          username: 'Anonymous',
-          content: 'No, I think you lost them. You lost your marbles Bob. You lost them for good.',
-        }
-      ]
+      messages: []
+
     }
-    this.newMessage = this.newMessage.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.differentUser = this.differentUser.bind(this);
   }
 
-  newMessage(message) {
-    const inputMsg = { username: 'New Person', content: message}
-    const messages = this.state.messages.concat(inputMsg)
-    this.setState({ messages: messages });
+  differentUser(user) {
+    const outgoingMsg = { type: 'postNotification', oldUser: this.state.currentUser.name, newUser: user}
+    this.setState({ currentUser: {name: user}});
+    this.socket.send(JSON.stringify(outgoingMsg))
+  }
+
+  // newMessage(message) {
+  newMessage(data) {
+
+  const { type, id, content, username } = data;
+
+    switch (type) {
+      case 'incomingMessage':
+        const inputMsg = { type: type, id: id, username: username, content: content }
+        const messages = this.state.messages.concat(inputMsg)
+        this.setState({ messages: messages });
+        break;
+      case 'incomingNotification':
+        const inputMsg2 = { type: type, id: id, content: content }
+        const messages2 = this.state.messages.concat(inputMsg2)
+        this.setState({ messages: messages2 });
+        break;
+      default:
+        throw new Error('Unknown event type ' + data.type);
+    }
+
+    // const inputMsg = { id: message.id, username: this.state.currentUser.name, content: message.content }
+    // const messages = this.state.messages.concat(inputMsg)
+    // this.setState({ messages: messages });
+  }
+
+  sendMessage(message) {
+    console.log('Attempting to send message out to Websocket');
+    console.log('Message sending out to WebSocket is', message);
+    const outgoingMsg = { type: 'postMessage', username: this.state.currentUser.name, content: message }
+    this.socket.send(JSON.stringify(outgoingMsg));
   }
 
   componentDidMount() {
     console.log('componentDidMount <App />');
+
+    this.socket = new WebSocket('ws:localhost:3001');
+
+    this.socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log('Websocket Data is:', data);
+      this.newMessage(data);
+    }
+
     setTimeout(() => {
       console.log('Simulating incoming message');
       const newMsg = { id: 3, username: 'Michelle', content: 'Hello there!' };
@@ -46,7 +80,7 @@ class App extends Component {
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
         <MessageList messages={this.state.messages} />
-        <ChatBar newMessage={this.newMessage} currentUser={this.state.currentUser.name} />
+        <ChatBar differentUser={this.differentUser} newMessage={this.sendMessage} currentUser={this.state.currentUser.name} />
       </div>
     );
   }
