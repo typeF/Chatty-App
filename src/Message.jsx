@@ -10,12 +10,10 @@ class Message extends React.Component {
 
         ( this.props.type === 'incomingImage' ?
         (<div className="message">
-          <div className="message-user-container">
-            <span className={"message-username"}>{this.props.username}</span>
-          </div>
-          <div className="image-container">
-            <img className="image" src={this.props.content} alt='Image'/>
-          </div>
+            <span className={userClass}>{this.props.username}</span>
+            <div className="message-content">
+              <img className="image" src={this.props.content} alt='Image'/>
+            </div>
         </div> )
           :
         (<div className="message">
