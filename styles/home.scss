@@ -34,6 +34,23 @@ h1 {
   padding: 0 9px;
 }
 
+.message-username-green {
+  color: #23ba62
+}
+
+.message-username-purple {
+  color: #5d30b0
+}
+
+.message-username-orange {
+  color: #e47216
+}
+
+.message-username-blue {
+  color: #355cc7
+}
+
+
 .chatbar-message {
   flex: 8;
 }
@@ -45,6 +62,14 @@ h1 {
 .message {
   display: flex;
   padding: 5px;
+}
+
+.image-container {
+  display: initial;
+}
+
+.image {
+  max-width: 60%;
 }
 
 .message.system {

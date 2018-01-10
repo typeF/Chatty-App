@@ -7,9 +7,10 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: { name: 'Bobby' },
+      currentUser: { name: 'Anonymous' },
       messages: [],
-      activeUsers: 0
+      activeUsers: 0,
+      userColor: 'black'
     }
     this.sendMessage = this.sendMessage.bind(this);
     this.differentUser = this.differentUser.bind(this);
@@ -23,13 +24,21 @@ class App extends Component {
 
   newMessage(data) {
 
-  const { type, id, content, username, activeUsers } = data;
+  const { type, id, content, username, activeUsers, color } = data;
 
     switch (type) {
+      case 'userColor':
+        this.setState({ userColor: color });
+        break;
       case 'incomingMessage':
-        const inputMsg = { type: type, id: id, username: username, content: content }
+        const inputMsg = { type: type, id: id, userColor: color, username: username, content: content }
         const messages = this.state.messages.concat(inputMsg)
         this.setState({ messages: messages });
+        break;
+      case 'incomingImage':
+        const inputMsg3 = { type: type, id: id, userColor: color, username: username, content: content }
+        const messages3 = this.state.messages.concat(inputMsg3)
+        this.setState({ messages: messages3 });
         break;
       case 'incomingNotification':
         const inputMsg2 = { type: type, id: id, content: content }
@@ -47,7 +56,12 @@ class App extends Component {
   sendMessage(message) {
     console.log('Attempting to send message out to Websocket');
     console.log('Message sending out to WebSocket is', message);
-    const outgoingMsg = { type: 'postMessage', username: this.state.currentUser.name, content: message }
+    const hasImage = /.jpg|.jpeg|.png|.gif/.test(message);
+    let type;
+    if (hasImage)
+      type = 'postImage';
+    else type = 'postMessage';
+    const outgoingMsg = { type: type, userColor: this.state.userColor, username: this.state.currentUser.name, content: message }
     this.socket.send(JSON.stringify(outgoingMsg));
   }
 
@@ -64,7 +78,7 @@ class App extends Component {
 
     setTimeout(() => {
       console.log('Simulating incoming message');
-      const newMsg = { id: 3, username: 'Michelle', content: 'Hello there!' };
+      const newMsg = { id: 3, userColor: 'pink', username: 'Michelle', content: 'Hello there!' };
       const messages = this.state.messages.concat(newMsg);
       this.setState({ messages: messages });
     }, 3000);
@@ -76,7 +90,7 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
-          <span className="navbar-userCount">{this.state.activeUsers} users online</span>
+          <span className="navbar-userCount">{this.state.activeUsers} user(s) online</span>
         </nav>
         <MessageList messages={this.state.messages} />
         <ChatBar differentUser={this.differentUser} newMessage={this.sendMessage} currentUser={this.state.currentUser.name} />

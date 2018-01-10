@@ -2,13 +2,28 @@ import React, { Component } from 'react';
 
 class Message extends React.Component {
   render() {
+    const userClass = `message-username message-username-${this.props.userColor}`;
     return (
       <div>
         { this.props.username ?
-        <div className="message">
-          <span className="message-username">{this.props.username}</span>
+
+
+        ( this.props.type === 'incomingImage' ?
+        (<div className="message">
+          <div className="message-user-container">
+            <span className={"message-username"}>{this.props.username}</span>
+          </div>
+          <div className="image-container">
+            <img className="image" src={this.props.content} alt='Image'/>
+          </div>
+        </div> )
+          :
+        (<div className="message">
+          <span className={userClass}>{this.props.username}</span>
           <span className="message-content">{this.props.content}</span>
-        </div> :
+        </div> )
+        )
+        :
         <div className="message system">
           {this.props.content}
         </div>
