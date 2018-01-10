@@ -8,8 +8,8 @@ class App extends Component {
     super(props);
     this.state = {
       currentUser: { name: 'Bobby' },
-      messages: []
-
+      messages: [],
+      activeUsers: 0
     }
     this.sendMessage = this.sendMessage.bind(this);
     this.differentUser = this.differentUser.bind(this);
@@ -21,10 +21,9 @@ class App extends Component {
     this.socket.send(JSON.stringify(outgoingMsg))
   }
 
-  // newMessage(message) {
   newMessage(data) {
 
-  const { type, id, content, username } = data;
+  const { type, id, content, username, activeUsers } = data;
 
     switch (type) {
       case 'incomingMessage':
@@ -36,14 +35,13 @@ class App extends Component {
         const inputMsg2 = { type: type, id: id, content: content }
         const messages2 = this.state.messages.concat(inputMsg2)
         this.setState({ messages: messages2 });
+        if (activeUsers)
+          this.setState({activeUsers: activeUsers})
         break;
       default:
         throw new Error('Unknown event type ' + data.type);
     }
 
-    // const inputMsg = { id: message.id, username: this.state.currentUser.name, content: message.content }
-    // const messages = this.state.messages.concat(inputMsg)
-    // this.setState({ messages: messages });
   }
 
   sendMessage(message) {
@@ -78,6 +76,7 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <span className="navbar-userCount">{this.state.activeUsers} users online</span>
         </nav>
         <MessageList messages={this.state.messages} />
         <ChatBar differentUser={this.differentUser} newMessage={this.sendMessage} currentUser={this.state.currentUser.name} />
