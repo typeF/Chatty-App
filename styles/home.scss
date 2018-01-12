@@ -68,8 +68,8 @@ h1 {
 }
 
 .image {
-  width: 60%;
-  height: 60%;
+  margin-top: 3px;
+  width: 81%;
 }
 
 .message.system {
@@ -84,8 +84,12 @@ h1 {
   padding: 0 10px;
 }
 
-.message-content {
+.message-content,
+.message-digest-item {
   flex: 8;
+  display: block;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .message-username {

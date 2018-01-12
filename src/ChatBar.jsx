@@ -14,11 +14,23 @@ class ChatBar extends React.Component {
   }
 
   render() {
-    console.log('Rendering <ChatBar>');
     return (
       <footer className="chatbar">
-        <input className="chatbar-username" value={this.state.value} onChange={event => { this.changeUser(event.target.value) }} onKeyPress={event => {if (event.key === 'Enter') {this.props.differentUser(this.state.value)}}} />
-        <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress={(event => { if (event.key === 'Enter') { this.props.newMessage(event.target.value); event.target.value = ''; } })} />
+        <input className="chatbar-username" value={this.state.value} 
+          onChange={event => {
+            this.changeUser(event.target.value) 
+          }} 
+          onKeyPress={event => {
+            if (event.key === 'Enter') 
+              {this.props.differentUser(this.state.value)}
+          }}/>
+          
+        <input className="chatbar-message" placeholder="Type a message and hit ENTER" 
+          onKeyPress={(event => {
+            if (event.key === 'Enter') 
+              { this.props.newMessage(event.target.value); event.target.value = ''; } 
+            })
+          }/>
       </footer>
     )
   }
