@@ -3,7 +3,7 @@
 Chatty is a web chat application built with Node, Express, React and Websockets allowing users to chat with other in real-time. Features combining text and image content in single posts and over 16 million possible username colors.
 
 ## Screenshots
-!["Chat Screen"](#)
+!["Chat Screen"](https://github.com/typeF/Chatty-App/blob/master/docs/Chatty%20Screenshot.png?raw=true)
 
 ## Getting Started
 ```
