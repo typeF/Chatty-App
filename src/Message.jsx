@@ -9,7 +9,7 @@ class Message extends React.Component {
       imageContent = imageFilter(content);
 
     function imageFilter(imageContent) {
-      const regExp = /(\S*.jpg|jpeg|png|gif)/g;
+      const regExp = /(\S*.jpg|\S*.jpeg|\S*.png|\S*.gif)/g;
       return imageContent.split(regExp).map(item => {
         if (regExp.test(item)) 
           return <img className="image" src={item} alt='Image'/>
