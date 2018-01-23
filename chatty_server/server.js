@@ -23,7 +23,6 @@ const wss = new SocketServer({ server });
 
   ws.on('message', message => {
     message = JSON.parse(message);
-    // console.log('Received from React: ', message);
     const { type, username, userColor, content, oldUser, newUser } = message;
     let outgoingMessage = {type: type, id: uuidv1(), username: username, color: userColor, content: content };
 
@@ -38,6 +37,8 @@ const wss = new SocketServer({ server });
       case 'postImage':
         outgoingMessage.type = 'incomingImage';
         break;
+      default:
+        throw new Error('No type specified');
     }
     broadcast(outgoingMessage);
   });
@@ -46,6 +47,9 @@ const wss = new SocketServer({ server });
     console.log('Client disconnected')
     connectionChange('left');
   });
+
+  ws.on('error', console.error);
+
 });
 
 function broadcast(message) {
